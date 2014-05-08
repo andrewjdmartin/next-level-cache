@@ -5,30 +5,26 @@ Tags: cache,next level cache,next level shit,up in your grill,db,drop-in,db.php,
 Requires at least: 2.9
 Tested up to: 3.9
 Stable tag: trunk
+License: GPL
 
-Next Level Cache is a plugin that caches database queries to improve performance.
+Next Level Cache improves performance by caching database queries.
 
 == Description ==
 
-CAUTION: This is a BETA plugin on which I am actively working. If you use this plugin I would be interesting in hearing feedback on the following issues:
+= CAUTION: This is a BETA plugin on which I am actively working. If you give this plugin a try, I would greatly appreciate any feedback you can provide on the plugin support forum. Please note: =
 
-* This cache will most likely perform best on sites that are used as a CMS (ie a finite number of pages that are not being constantly updated throughout the day)
-* Sites that have a large number of pages which all receive a reasonable amount of views may not experience performance improvement (I don't have an exact number but perhaps a few hundred pages).
-* Multi-site installations share the cache which means it can grow larger.  Cache resets and pruning for one site on the network will affect all others.  This is because the DB Drop-in initializes and begins caching prior to the loading of the multi-site configuration.  As long as the sites meet the above criteria of being CMS-types sites then it shouldn't be a big deal.
-* The cache does not ever expire on it's own, but resets automatically when posts or settings are updated.  This could cause performance issues on sites that are constantly being updated all day, every day.
-* There are no configuration options for the plugin.
+* The plugin is intended for sites that are used as a CMS rather than "feed" type sites that are constantly updated all day, every day.
+* Sites with more than a few hundred pages that are all receiving frequent views may experience excessive cache pruning.
+* Multi-site installations share the cache which means they will all effect each other as far as cache size, pruning, resetting, etc.
+* Sites with extremely high traffic may require adding a static HTML cache plugin in addition to Next Level Cache
 
-= With all these caveats, why the heck would I use this plugin instead of one of the well-known caching plugins?! =
+= Why use Next Level Cache instead of one of the well-known caching plugins? =
 
-I've tried all of the usual, popular plugins and I didn't find one that worked exactly the way I wanted. I was interested in DB caching (which I've found to be the weakest link of Wordpress performance) but I didn't care about all of the other speed improvements like script/css minification, gzip support and so on because I handle those at the server level.  Next Level Cache does only one thing which is to quietly reduce DB load and try to keep the caching mechanism totally unnoticeable.
+This plugin is a trade-off, made for a specific type of site.  My goal was to make a plugin that would reduce (but not completely eliminate) the obscene amount of queries Wordpress runs on every page. I wanted something other than a static HTML cache so that pages could have a fast load-time but still be dynamically generated.
 
-There are many ways to cache output. A popular technique is static HTML caching, which is building a page once, saving it as HTML, and then serving that "static" page on subsequent views. This is an excellent technique because the DB is never even hit, but static page caching has it's trade-offs as well. People may see stale data for one thing.  Dealing with dynamic content on a page such as random items, comments and other things is problematic. Another is that pages may be rendered differently for different devices (for example mobile).  One solution to that I have seen is to simply disable the cache for mobile devices or alternate views, which obviously is not an effective caching strategy.
+The reason I wrote yet another cache plugin is because I tried all of the usual, popular plugins and for various reasons they didn't quite work for a particular site. My use case is a business CMS with light-to-medium traffic, about 10-20 fixed pages and perhaps a new daily/weekly blog post. This seemed like a fairly common scenario that was worth building a new cache plugin.
 
-Another issue with static caching is that it requires building each page from scratch and so if your site does not have tons of traffic, your visitors may experience page after page of cache warm-up. When the cache is empty, a page has to be loaded the normal way first and then saved to the cache to "warm" it up. This is a problem with any cache strategy, however Wordpress makes a lot of queries that are shared all pages of the site.  A static HTML cache will warm up the cache for each and every page. Next Level Cache will cache shared queries on the first page, so subsequent pages may be half-way warmed up already even if they haven't been viewed.
-
-Another caching strategy for Wordpress is "object caching" which is caching data that is obtained through the Wordpress Object API. However I found that not enough data is cached this way and there are still way too many DB calls made.  With DB caching these objects are cached anyway.
-
-The point is that there are trade-offs and certain kinds of caching will be appropriate for certain site. The well-known caching plugins are popular for a reason - because they work great for certain purposes. Next Level Cache does things a little differently that I found to work better for my particular needs of using Wordpress as a CMS. I hope it might work for you as well and I appreciate any feedback that you can provide.
+If your site doesn't fit this use case because it has extremely high traffic and/or is a feed-type of site with constant new postings (like icanhascheezburger for example) then Next Level Cache alone will probably not reduce your DB load enough. However, you can combine Next Level Cache with a static HTML cache plugin and your static cache warm-up times may even improve.
 
 = Overview =
 
@@ -36,10 +32,14 @@ Did you know that a fresh, stock WordPress install with the default theme and no
 
 Next Level Cache is a lightweight plugin that intercepts DB queries and selectively caches them. A special type of plugin file called a "Drop-in" is included to override Wordpress's default DB functionality. Every page is still generated dynamically, but WordPress is coerced into using cached data for many of the DB calls. This hybrid approach doesn't eliminate all database queries, but keeps them down to a reasonable number (usually between 1 and 5 queries per page, depending on your theme and plugins).
 
+Next Level Cache monitors it's own activity. If the cache isn't performing well then a warning message will display on the admin dashboard widget and plugin settings page. If you use this plugin and see that warning, I would greatly appreciate a post on the support forum with some info about your site. Thank you!  
+
 = Features =
 
 * Zero configuration
-* Query debugging options
+* Self-monitoring for performance issues
+* Query debugging output
+* Awesome logo
 
 == Installation ==
 
@@ -57,6 +57,10 @@ Manual Installation:
 3. Activate the plugin through the 'Plugins' menu in WordPress
 4. Copy or soft link the included Drop-in file "db.php" in the root of your wp-content directory
 
+== Screenshots ==
+
+1. All up in your grill
+
 == Frequently Asked Questions ==
 
 = 1. What is NLC (Next Level Cache)? =
@@ -71,15 +75,19 @@ Wordpress supports a special type of plugin known as a "Drop-in" which allows ov
 
 Updating any page or Wordpress setting will clear the cache (changing the value isn't necessary, just click an update button somewhere).
 
-= 4. Where does Next Level Cache store it's data? =
+= 4. What are cache "resets" and "prunes" and are they a good/bad thing? =
+
+A reset is when the entire cache is cleared after changes were made to a page or settings. Pruning is when the allotted space for the cache is filled and items are removed to decrease the size. Both of these are *technically* bad because the cache has to be re-generated for some or all of the pages. However a reset is a normal, unavoidable occurrence when pages or settings are updated.  Excessive pruning, on the other hand, means that the cache is not functioning optimally and your site may even experience performance degradation.  Next Level Cache keeps track of the number of prunes each day in order to detect and warn you of this situation. If the Next Level Cache dashboard widget or settings page is showing a warning about excessive pruning then Next Level Cache may not be the best caching plugin for your site.
+
+= 5. Where does Next Level Cache store it's data? =
 
 The cache is stored in the wp_options table and is loaded upfront with one large query instead of many small ones.
 
-= 5. Will this plugin work in combination with other caching plugins? =
+= 6. Will this plugin work in combination with other caching plugins? =
 
 I've minimally experimented with a few other caching plugins and Next Level Cache seems to be compatible with them. However, Wordpress only allows one DB.php Drop-in file to be installed at a time. So if the other plugin requires it's own DB Drop-in then you would have to choose one over the other.  Next Level Cache does not make any attempt to automatically copy or alter the DB.php.  If there is a conflicting DB.php file installed then Next Level Cache will simply not do anything except to show a warning notification on the plugin settings page.
 
-= 6. How can I configure or customize the plugin? =
+= 7. How can I configure or customize the plugin? =
 
 For the moment there are no configuration options, however there will be some options
 
