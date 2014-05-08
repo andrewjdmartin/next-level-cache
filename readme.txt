@@ -70,10 +70,13 @@ For the moment there are no configuration options, however there will be some op
 
 == Upgrade Notice ==
 
-= 0.0.4 =
-* initial release
+= 0.0.5 =
+* implement cache pruning and stats for cache activity
 
 == Changelog ==
+
+= 0.0.5 =
+* implement cache pruning and stats for cache activity
 
 = 0.0.4 =
 * initial release
