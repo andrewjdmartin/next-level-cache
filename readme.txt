@@ -11,6 +11,12 @@ Next Level Cache improves performance by caching database queries.
 
 == Description ==
 
+Did you know that a fresh, stock WordPress install with the default theme and no plugins will execute over 30 database queries every single time a visitor views the home page?  After installing an feature-rich theme and a few basic plugins WordPress can easily run 100 or more queries on every single page.  This puts a enormous amount of strain on the database server.
+
+Next Level Cache is a lightweight plugin that intercepts DB queries and selectively caches them. A special type of plugin file called a "Drop-in" is included to override Wordpress's default DB functionality. Every page is still generated dynamically, but WordPress is coerced into using cached data for many of the DB calls. This hybrid approach doesn't eliminate all database queries, but keeps them down to a reasonable number (usually between 1 and 5 queries per page, depending on your theme and plugins).
+
+Next Level Cache monitors it's own activity. If the cache isn't performing well then a warning message will display on the admin dashboard widget and plugin settings page. If you use this plugin and see that warning, I would greatly appreciate a post on the support forum with some info about your site. Thank you!  
+
 = CAUTION: This is a BETA plugin on which I am actively working. If you give this plugin a try, I would greatly appreciate any feedback you can provide on the plugin support forum. Please note: =
 
 * The plugin is intended for sites that are used as a CMS rather than "feed" type sites that are constantly updated all day, every day.
@@ -20,19 +26,11 @@ Next Level Cache improves performance by caching database queries.
 
 = Why use Next Level Cache instead of one of the well-known caching plugins? =
 
-This plugin is a trade-off, made for a specific type of site.  My goal was to make a plugin that would reduce (but not completely eliminate) the obscene amount of queries Wordpress runs on every page. I wanted something other than a static HTML cache so that pages could have a fast load-time but still be dynamically generated.
+This plugin is made for a specific type of site.  My goal was to make a plugin that would reduce (but not completely eliminate) the obscene amount of queries Wordpress runs on every page. I wanted something other than a static HTML cache so that pages could have a fast load-time but still be dynamically generated.
 
 The reason I wrote yet another cache plugin is because I tried all of the usual, popular plugins and for various reasons they didn't quite work for a particular site. My use case is a business CMS with light-to-medium traffic, about 10-20 fixed pages and perhaps a new daily/weekly blog post. This seemed like a fairly common scenario that was worth building a new cache plugin.
 
 If your site doesn't fit this use case because it has extremely high traffic and/or is a feed-type of site with constant new postings (like icanhascheezburger for example) then Next Level Cache alone will probably not reduce your DB load enough. However, you can combine Next Level Cache with a static HTML cache plugin and your static cache warm-up times may even improve.
-
-= Overview =
-
-Did you know that a fresh, stock WordPress install with the default theme and no plugins will execute over 30 database queries every single time a visitor views the home page?  After installing an feature-rich theme and a few basic plugins WordPress can easily run 100 or more queries on every single page.  This puts a enormous amount of strain on the database server.
-
-Next Level Cache is a lightweight plugin that intercepts DB queries and selectively caches them. A special type of plugin file called a "Drop-in" is included to override Wordpress's default DB functionality. Every page is still generated dynamically, but WordPress is coerced into using cached data for many of the DB calls. This hybrid approach doesn't eliminate all database queries, but keeps them down to a reasonable number (usually between 1 and 5 queries per page, depending on your theme and plugins).
-
-Next Level Cache monitors it's own activity. If the cache isn't performing well then a warning message will display on the admin dashboard widget and plugin settings page. If you use this plugin and see that warning, I would greatly appreciate a post on the support forum with some info about your site. Thank you!  
 
 = Features =
 
