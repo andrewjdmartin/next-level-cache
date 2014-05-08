@@ -37,8 +37,8 @@ Automatic Installation:
 
 Manual Installation:
 
-1. Download simplesecure.zip
-2. Unzip and upload the 'nlc' folder to your '/wp-content/plugins/' directory
+1. Download next-level-cache.zip
+2. Unzip and upload the 'next-level-cache' folder to your '/wp-content/plugins/' directory
 3. Activate the plugin through the 'Plugins' menu in WordPress
 4. Copy or soft link the included Drop-in file "db.php" in the root of your wp-content directory
 
