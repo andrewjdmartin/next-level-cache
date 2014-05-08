@@ -12,10 +12,10 @@ Next Level Cache is a plugin that caches database queries to improve performance
 
 CAUTION: This is a BETA plugin on which I am actively working. If you use this plugin I would be interesting in hearing feedback on the following issues:
 
-* This cache will most likely perform best on sites that are used as a CMS (ie a finite number of pages that are not being contactly updated throughout the day)
+* This cache will most likely perform best on sites that are used as a CMS (ie a finite number of pages that are not being constantly updated throughout the day)
 * Sites that have a large number of pages which all receive a reasonable amount of views may not experience performance improvement (I don't have an exact number but perhaps a few hundred pages).
 * Multi-site installations share the cache which means it can grow larger.  Cache resets and prunning for one site on the network will affect all others.  This is because the DB Drop-in initializes and begins caching prior to the loading of the multi-site configuration.  As long as the sites meet the above criteria of being CMS-types sites then it shouldn't be a big deal.
-* The cache does not ever expire on it's own, but resets automatically when posts or settings are updated.  This could cause performance issues on sites that are constantly being updated.
+* The cache does not ever expire on it's own, but resets automatically when posts or settings are updated.  This could cause performance issues on sites that are constantly being updated all day, every day.
 * There are no configuration options for the plugin.
 
 Did you know that a fresh, stock WordPress install with the default theme and no plugins will execute over 30 database queries every single time a visitor views the home page?  After installing an feature-rich theme and a few basic plugins WordPress can easily run 100 or more queries on every single page.  This puts a enormous amount of strain on the database server.
