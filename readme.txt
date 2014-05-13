@@ -22,7 +22,7 @@ Next Level Cache monitors it's own activity. If the cache isn't performing well 
 * The plugin is intended for sites that are used as a CMS rather than "feed" type sites that are constantly updated all day, every day.
 * Sites with more than a few hundred pages that are all receiving frequent views may experience excessive cache pruning.
 * Multi-site installations share the cache which means they will all effect each other as far as cache size, pruning, resetting, etc.
-* Sites with extremely high traffic may require adding a static HTML cache plugin in addition to Next Level Cache
+* Sites with extremely high traffic may require adding a static HTML cache plugin in addition to Next Level Cache.
 
 = Why use Next Level Cache instead of one of the well-known caching plugins? =
 
@@ -91,10 +91,17 @@ For the moment there are no configuration options, however there will be some op
 
 == Upgrade Notice ==
 
-= 0.0.5 =
-* implement cache pruning and stats for cache activity
+= 0.0.6 =
+* Fix issue with cache whitelist not being honored
+* Added config vars to add custom keywords to cache whitelist
+* Display the query that triggered the last cache reset on the plugin settings page
 
 == Changelog ==
+
+= 0.0.6 =
+* Fix issue with cache whitelist not being honored
+* Added config vars to add custom keywords to cache whitelist
+* Display the query that triggered the last cache reset on the plugin settings page
 
 = 0.0.5 =
 * implement cache pruning and stats for cache activity

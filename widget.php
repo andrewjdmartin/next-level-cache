@@ -55,7 +55,7 @@ class NLC_Dashboard_Widget {
 		
 		echo "<div><img style='width: 100%;' alt='Next Level Cache' src='" . NEXT_LEVEL_CACHE_URL_ROOT . "images/logo.gif' /></div>";
 		
-		if ($driver_version) {
+		if ($driver_version && $driver_version == NEXT_LEVEL_CACHE_EXPECTED_DRIVER_VERSION) {
 			$count = $wpdb->get_cache_count();
 			$size = $wpdb->get_cache_size_formatted();
 			$num_resets_today = $wpdb->get_cache_info('num_resets_today',0);
@@ -80,6 +80,9 @@ class NLC_Dashboard_Widget {
 			echo "<div>Number of Resets Today: ".$num_resets_today."</div>";
 			echo "<div>Number of Prunes Today: ".$num_prunes_today."</div>";
 				
+		}
+		elseif ($driver_version) {
+			echo "<p style='background-color: #FFCCCC; padding: 5px; border-radius: 3px;'>WARNING: The DB Drop-in is out of date.  See plugin settings.</p>";
 		}
 		elseif ($db_driver_class != 'wpdb') {
 			echo "<p style='background-color: #FFCCCC; padding: 5px; border-radius: 3px;'>WARNING: A conflicting DB Drop-in is installed.  See plugin settings.</p>";

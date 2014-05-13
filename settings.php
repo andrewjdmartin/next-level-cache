@@ -100,10 +100,19 @@ function next_level_cache_settings_page()
 		
 		<?php 
 
-		if ($driver_version) {
+		if ($driver_version && $driver_version == NEXT_LEVEL_CACHE_EXPECTED_DRIVER_VERSION) {
 			?>
 			<div style='margin: 10px 0px 10px 0px; padding: 25px; background-color: #99CC99; border-radius: 5px;'>
 			NLC DB Drop-in version <?php echo $driver_version; ?> is enabled
+			</div>
+			<?php 
+		}
+		elseif ($driver_version) {
+		?>
+			<div style='margin: 10px 0px 10px 0px; padding: 25px; background-color: #FFCCCC; border-radius: 5px;'>
+			<h3>WARNING: The DB Drop-in is out of date.</h3>
+			<p>The DB Driver '<?php  echo $db_driver_class; ?>' installed at <code><?php echo NEXT_LEVEL_DRIVER_PATH; ?>db.php</code> is out of date.
+			Please replace this file with the one located at <code>wp-content/plugins/next-level-cache/db.php</code>.</p>
 			</div>
 			<?php 
 		}
@@ -111,7 +120,7 @@ function next_level_cache_settings_page()
 			?>
 			<div style='margin: 10px 0px 10px 0px; padding: 25px; background-color: #FFCCCC; border-radius: 5px;'>
 			<h3>WARNING: A conflicting DB Drop-in is installed.</h3>
-			<p>The DB Driver '<?php  echo $db_driver_class; ?>' is installed at <code><?php echo NEXT_LEVEL_DRIVER_PATH; ?></code>
+			<p>The DB Drop-in '<?php  echo $db_driver_class; ?>' is installed at <code><?php echo NEXT_LEVEL_DRIVER_PATH; ?>db.php</code>
 			If you wish to use Next Level Cache you will need to replace this driver file with the one located 
 			at <code>wp-content/plugins/next-level-cache/db.php</code>.</p>
 			</div>
@@ -172,6 +181,7 @@ function next_level_cache_settings_page()
 			echo "<div>Last Prune: ". ($last_prune ? date('Y-m-d H:i:s',$last_prune) : 'N/A') ."</div>";
 			echo "<div>Number of Resets Today: ".$num_resets_today."</div>";
 			echo "<div>Number of Prunes Today: ".$num_prunes_today."</div>";
+			echo "<div>Last Reset Query: <code>".htmlentities2($wpdb->get_cache_info('last_reset_query','N/A'))."</code></div>";
 			
 
 			
@@ -180,7 +190,7 @@ function next_level_cache_settings_page()
 				echo "<div style='margin: 10px 0px 10px 0px; padding: 25px; background-color: #FFCCCC; border-radius: 5px;'>The number of prunes is high.  Next Level Cache may not be improving performance on this site</div>";
 			}
 			
-			echo "<div><i>Updating any page or setting will clear the cache</i></div>";
+			echo "<p><i>Updating any page or setting will clear the cache</i></p>";
 
 			//$items = $wpdb->get_raw_cache_items();
 			//echo "<textarea style='width: 100%; height: 400px;'>" . htmlspecialchars(print_r($items,1)) . "</textarea>";
@@ -194,6 +204,19 @@ function next_level_cache_settings_page()
 		
 		<div><code>define('SAVEQUERIES', true);</code></div>
 		<div><code>define('DEBUGQUERIES', true);</code></div>
+		
+		<h3>Cache Whitelist</h3>
+		
+		<p>Some queries should not ever be read from the cache.  Likewise, some insert/update queries should not cause the cache to be reset. 
+		Next Level Cache contains a default whitelist based on standard Wordpress functionality, however it may be necessary to add additional keywords
+		that are used by plugins or other custom functionality.  Additional white-lists keywords can be configured in wp-config.php as a
+		pipe-delimited list:</p>
+		
+		<div><code>define('CACHE_READ_WHITELIST','_comment|_transient'); // do not read from cache is sql contains these</code></div>
+		<div><code>define('CACHE_WRITE_WHITELIST','_comment|_transient'); // do not reset cache if sql contains these</code></div>
+		
+		<p><i>Use caution when customizing the whitelist.  Be sure that any keywords are unique and only present in the specific query that should be ingored.
+		Adding a keyword like "post" or "meta" for example would essentially disable the cache entirely because these keywords exist in almost every query.</i></p>
 		
 		<h3>Plugin Details</h3>
 		<div>Plugin Version: <?php echo NEXT_LEVEL_CACHE_VERSION; ?></div>

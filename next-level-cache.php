@@ -3,13 +3,14 @@
 Plugin Name: Next Level Cache
 Plugin URI: http://verysimple.com.com/products/nlc
 Description: Next Level Cache is all up in your grill, caching your DB queries.
-Version: 0.0.5
+Version: 0.0.6
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL
 */
 
-DEFINE('NEXT_LEVEL_CACHE_VERSION','0.0.5');
+DEFINE('NEXT_LEVEL_CACHE_VERSION','0.0.6');
+DEFINE('NEXT_LEVEL_CACHE_EXPECTED_DRIVER_VERSION','0.0.4');
 DEFINE('NEXT_LEVEL_CACHE_URL_ROOT',plugins_url().'/'.str_replace('.php', '/', basename(__FILE__)) );
 DEFINE('NEXT_LEVEL_DRIVER_PATH', str_replace('plugins/next-level-cache/','db.php',plugin_dir_path( __FILE__ )));
 

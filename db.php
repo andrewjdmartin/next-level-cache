@@ -13,12 +13,12 @@
 class next_level_cache_wpdb extends wpdb
 {
 	
-	static $DRIVER_VERSION = '0.0.3';
+	static $DRIVER_VERSION = '0.0.4';
 	
 	/**
 	 * @var array if a query contains a term in this array it will not be cached
 	 */
-	static $DO_NOT_CACHE = array();
+	static $CACHE_READ_WHITELIST = array();
 	
 	/**
 	 * @var int max size of cache in KB  (5000 = ~5Mb)
@@ -33,7 +33,7 @@ class next_level_cache_wpdb extends wpdb
 	/**
 	 * @var array if a query contains a term in this array it will not cause the cache to be invalidated
 	 */
-	static $DO_NOT_INVALIDATE_CACHE = array();
+	static $CACHE_WRITE_WHITELIST = array();
 	
 	/**
 	 * @var array the raw cache data is a key/value pair array
@@ -76,6 +76,26 @@ class next_level_cache_wpdb extends wpdb
 	function __construct($dbuser, $dbpassword, $dbname, $dbhost) 
 	{
 		parent::__construct($dbuser, $dbpassword, $dbname, $dbhost);
+		
+		self::$CACHE_READ_WHITELIST[] = '_comment '; // don't cache the comments table
+		self::$CACHE_READ_WHITELIST[] = 'FOUND_ROWS'; // found rows and rand are used together
+		self::$CACHE_READ_WHITELIST[] = 'RAND()';
+		self::$CACHE_READ_WHITELIST[] = 'posts WHERE ID IN'; // IN is used with random or search queries
+		self::$CACHE_READ_WHITELIST[] = '_transient';
+		self::$CACHE_READ_WHITELIST[] = '_edit_lock';
+		
+		if (defined(CACHE_READ_WHITELIST) && CACHE_READ_WHITELIST) {
+			self::$CACHE_READ_WHITELIST = array_merge(self::$CACHE_READ_WHITELIST,explode('|',CACHE_READ_WHITELIST));
+		}
+			
+		self::$CACHE_WRITE_WHITELIST[] = '_comment ';
+		self::$CACHE_WRITE_WHITELIST[] = "next_level_cache";
+		self::$CACHE_WRITE_WHITELIST[] = "_transient";
+		self::$CACHE_WRITE_WHITELIST[] = "_edit_lock";
+		
+		if (defined(CACHE_WRITE_WHITELIST) && CACHE_WRITE_WHITELIST) {
+			self::$CACHE_WRITE_WHITELIST = array_merge(self::$CACHE_WRITE_WHITELIST,explode('|',CACHE_WRITE_WHITELIST));
+		}
 	}
 	
 	/**
@@ -188,16 +208,6 @@ class next_level_cache_wpdb extends wpdb
 		if (!$this->is_initialized) {
 			
 			$table_prefix = $this->get_cache_table_prefix();
-			
-			self::$DO_NOT_CACHE[] = $table_prefix.'comment'; // don't cache the comments table
-			self::$DO_NOT_CACHE[] = 'FOUND_ROWS'; // found rows and rand are used together
-			self::$DO_NOT_CACHE[] = 'RAND()';
-			self::$DO_NOT_CACHE[] = 'posts WHERE ID IN'; // IN is used with random or search queries
-			self::$DO_NOT_CACHE[] = '_transient';
-			
-			self::$DO_NOT_INVALIDATE_CACHE[] = $table_prefix.'comment';
-			self::$DO_NOT_INVALIDATE_CACHE[] = "next_level_cache";
-			self::$DO_NOT_INVALIDATE_CACHE[] = "_transient";
 		
 			$select = "select option_value from " . $table_prefix."options where option_name = 'next_level_cache'";
 			$result = parent::get_row($select);
@@ -329,7 +339,7 @@ class next_level_cache_wpdb extends wpdb
 		
 		if ($query == null) return true;
 		
-		foreach (self::$DO_NOT_CACHE as $bli) {
+		foreach (self::$CACHE_READ_WHITELIST as $bli) {
 			if (strpos($query, $bli) !== false) return true;
 		}
 		
@@ -452,15 +462,19 @@ class next_level_cache_wpdb extends wpdb
 		// write operations may need to invalidate the cache
 		if ( preg_match( '/^\s*(create|alter|truncate|drop|insert|delete|update|replace)\s/i', $query ) ) {
 			
+			// do not reset the cache if this query is on the whitelist
 			$invalidate_cache = true;
-			foreach (self::$DO_NOT_INVALIDATE_CACHE as $item) {
+			foreach (self::$CACHE_WRITE_WHITELIST as $item) {
 				if (strpos($query, $item) !== false) {
 					$invalidate_cache = false;
 					break;
 				}
 			}
 
-			if ($invalidate_cache) $this->reset_cache();
+			if ($invalidate_cache) {
+				$this->set_cache_info('last_reset_query', $query);
+				$this->reset_cache();
+			}
 		}
 			
 		return parent::query($query);
