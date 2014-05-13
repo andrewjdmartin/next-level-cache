@@ -13,7 +13,7 @@
 class next_level_cache_wpdb extends wpdb
 {
 	
-	static $DRIVER_VERSION = '0.0.5';
+	static $DRIVER_VERSION = '0.0.8';
 	
 	/**
 	 * @var array if a query contains a term in this array it will not be cached
@@ -80,11 +80,15 @@ class next_level_cache_wpdb extends wpdb
 		// these will be whitelisted for both read and write operations
 		$ignore_both = array(
 			'_comment',
-			'_transient',
+			'_cron',
+			"'cron'",
 			'_edit_lock',
 			'_domain_mapping_logins',
 			'indef_stats',
-			"'cron'"
+			'_transient_random_seed',
+			'akismet_spam_count',
+			'limit_login_retries_valid',
+			'stats_cache'
 		);
 		
 		self::$CACHE_READ_WHITELIST = $ignore_both;

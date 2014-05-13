@@ -91,10 +91,13 @@ For the moment there are no configuration options, however there will be some op
 
 == Upgrade Notice ==
 
-= 0.0.7 =
-* Fix issue with adding custom values to cache whitelist
+= 0.0.8 =
+* Tweak default cache whitelist
 
 == Changelog ==
+
+= 0.0.8 =
+* Tweak default cache whitelist
 
 = 0.0.7 =
 * Fix issue with adding custom values to cache whitelist

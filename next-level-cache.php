@@ -9,8 +9,8 @@ Author URI: http://verysimple.com/
 License: GPL
 */
 
-DEFINE('NEXT_LEVEL_CACHE_VERSION','0.0.7');
-DEFINE('NEXT_LEVEL_CACHE_EXPECTED_DRIVER_VERSION','0.0.5');
+DEFINE('NEXT_LEVEL_CACHE_VERSION','0.0.8');
+DEFINE('NEXT_LEVEL_CACHE_EXPECTED_DRIVER_VERSION','0.0.8');
 DEFINE('NEXT_LEVEL_CACHE_URL_ROOT',plugins_url().'/'.str_replace('.php', '/', basename(__FILE__)) );
 DEFINE('NEXT_LEVEL_DRIVER_PATH', str_replace('plugins/next-level-cache/','db.php',plugin_dir_path( __FILE__ )));
 
