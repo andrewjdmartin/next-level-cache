@@ -3,7 +3,7 @@ Contributors: verysimple
 Donate link: http://verysimple.com/products/nlc/
 Tags: cache,next level cache,next level shit,up in your grill,db,drop-in,db.php,database cache,db cache,dropin,verysimple
 Requires at least: 2.9
-Tested up to: 3.9
+Tested up to: 3.9.1
 Stable tag: trunk
 License: GPL
 
