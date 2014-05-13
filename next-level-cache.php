@@ -3,7 +3,7 @@
 Plugin Name: Next Level Cache
 Plugin URI: http://verysimple.com.com/products/nlc
 Description: Next Level Cache is all up in your grill, caching your DB queries.
-Version: 0.0.7
+Version: 0.0.8
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL
