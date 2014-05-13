@@ -91,10 +91,17 @@ For the moment there are no configuration options, however there will be some op
 
 == Upgrade Notice ==
 
-= 0.0.8 =
-* Tweak default cache whitelist
+= 0.0.9 =
+* Reduce cache limit max size to prevent unserialization errors
+* Add instructions for debugging wp-options query misses
+* More cache whitelist tweaking
 
 == Changelog ==
+
+= 0.0.9 =
+* Reduce cache limit max size to prevent unserialization errors
+* Add instructions for debugging wp-options query misses
+* More cache whitelist tweaking
 
 = 0.0.8 =
 * Tweak default cache whitelist

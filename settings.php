@@ -205,6 +205,16 @@ function next_level_cache_settings_page()
 		<div><code>define('SAVEQUERIES', true);</code></div>
 		<div><code>define('DEBUGQUERIES', true);</code></div>
 		
+		<p>In addition to debugging queries you can also view all query "misses" to the wp_options table.  These are queries for a
+		settings or value in the wp_options table that does not exist.  In this case Wordpress will simply default the value
+		to blank.  By inserting these into the wp_options table and setting them to blank, Wordpress will auto-load them on
+		startup and this will save a query.  In some cases there may be 20-30 of these queries.  The reason they are there
+		is usually themes or plugins that have an option which has never been configured by the user, and so therefore it has
+		never been saved to the database.  Adding the line below to wp-config.php will output these queries along with an
+		insert statement that you can run to fix the problem.</p>
+		
+		<div><code>define('DEBUGOPTIONS', true);</code></div>
+		
 		<h3>Cache Whitelist</h3>
 		
 		<p>Some queries should not ever be read from the cache.  Likewise, some insert/update queries should not cause the cache to be reset. 
@@ -212,8 +222,8 @@ function next_level_cache_settings_page()
 		that are used by plugins or other custom functionality.  Additional white-lists keywords can be configured in wp-config.php as a
 		pipe-delimited list:</p>
 		
-		<div><code>define('CACHE_READ_WHITELIST','_comment|_transient'); // do not read from cache is sql contains these</code></div>
-		<div><code>define('CACHE_WRITE_WHITELIST','_comment|_transient'); // do not reset cache if sql contains these</code></div>
+		<div><code>define('CACHE_READ_WHITELIST','_transient|posts WHERE ID IN|limit_login_'); // do not read from cache is sql contains these</code></div>
+		<div><code>define('CACHE_WRITE_WHITELIST','_transient|limit_login_'); // do not reset cache if sql contains these</code></div>
 		
 		<p><i>Use caution when customizing the whitelist.  Be sure that any keywords are unique and only present in the specific query that should be ingored.
 		Adding a keyword like "post" or "meta" for example would essentially disable the cache entirely because these keywords exist in almost every query.</i></p>

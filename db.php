@@ -13,7 +13,7 @@
 class next_level_cache_wpdb extends wpdb
 {
 	
-	static $DRIVER_VERSION = '0.0.8';
+	static $DRIVER_VERSION = '0.0.9';
 	
 	/**
 	 * @var array if a query contains a term in this array it will not be cached
@@ -26,9 +26,9 @@ class next_level_cache_wpdb extends wpdb
 	static $CACHE_WRITE_WHITELIST = null;
 	
 	/**
-	 * @var int max size of cache in KB  (5000 = ~5Mb)
+	 * @var int max size of cache in KB  (1000 = ~1Mb)
 	 */
-	static $MAX_CACHE_SIZE = 5000;
+	static $MAX_CACHE_SIZE = 1000;
 	
 	/**
 	 * @var int if number of prunes per day exceeds this number, the warning will appear on the dashboard and settings page
@@ -83,11 +83,11 @@ class next_level_cache_wpdb extends wpdb
 			'_cron',
 			"'cron'",
 			'_edit_lock',
+			'_nonce',
 			'_domain_mapping_logins',
-			'indef_stats',
 			'_transient_random_seed',
+			'indef_stats',
 			'akismet_spam_count',
-			'limit_login_retries_valid',
 			'stats_cache'
 		);
 		
@@ -95,11 +95,7 @@ class next_level_cache_wpdb extends wpdb
 		self::$CACHE_WRITE_WHITELIST = $ignore_both;
 		
 		// read-only ignore list for things like random numbers and such that have no directly related insert/update statement
-		array_push(self::$CACHE_READ_WHITELIST,
-			'FOUND_ROWS', // found rows and rand are used together
-			'RAND()',
-			'posts WHERE ID IN' // IN is used with random or search queries
-		);
+		array_push(self::$CACHE_READ_WHITELIST, 'FOUND_ROWS', 'RAND()');
 
 		// merge in any user-defined keywords
 		if (defined('CACHE_READ_WHITELIST') && CACHE_READ_WHITELIST) {
