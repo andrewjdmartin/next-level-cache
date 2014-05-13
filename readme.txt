@@ -91,12 +91,13 @@ For the moment there are no configuration options, however there will be some op
 
 == Upgrade Notice ==
 
-= 0.0.6 =
-* Fix issue with cache whitelist not being honored
-* Added config vars to add custom keywords to cache whitelist
-* Display the query that triggered the last cache reset on the plugin settings page
+= 0.0.7 =
+* Fix issue with adding custom values to cache whitelist
 
 == Changelog ==
+
+= 0.0.7 =
+* Fix issue with adding custom values to cache whitelist
 
 = 0.0.6 =
 * Fix issue with cache whitelist not being honored

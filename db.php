@@ -13,12 +13,17 @@
 class next_level_cache_wpdb extends wpdb
 {
 	
-	static $DRIVER_VERSION = '0.0.4';
+	static $DRIVER_VERSION = '0.0.5';
 	
 	/**
 	 * @var array if a query contains a term in this array it will not be cached
 	 */
-	static $CACHE_READ_WHITELIST = array();
+	static $CACHE_READ_WHITELIST = null;
+	
+	/**
+	 * @var array if a query contains a term in this array it will not cause the cache to be invalidated
+	 */
+	static $CACHE_WRITE_WHITELIST = null;
 	
 	/**
 	 * @var int max size of cache in KB  (5000 = ~5Mb)
@@ -29,11 +34,6 @@ class next_level_cache_wpdb extends wpdb
 	 * @var int if number of prunes per day exceeds this number, the warning will appear on the dashboard and settings page
 	 */
 	static $PRUNE_WARNING_LIMIT = 300;
-
-	/**
-	 * @var array if a query contains a term in this array it will not cause the cache to be invalidated
-	 */
-	static $CACHE_WRITE_WHITELIST = array();
 	
 	/**
 	 * @var array the raw cache data is a key/value pair array
@@ -77,24 +77,34 @@ class next_level_cache_wpdb extends wpdb
 	{
 		parent::__construct($dbuser, $dbpassword, $dbname, $dbhost);
 		
-		self::$CACHE_READ_WHITELIST[] = '_comment '; // don't cache the comments table
-		self::$CACHE_READ_WHITELIST[] = 'FOUND_ROWS'; // found rows and rand are used together
-		self::$CACHE_READ_WHITELIST[] = 'RAND()';
-		self::$CACHE_READ_WHITELIST[] = 'posts WHERE ID IN'; // IN is used with random or search queries
-		self::$CACHE_READ_WHITELIST[] = '_transient';
-		self::$CACHE_READ_WHITELIST[] = '_edit_lock';
+		// these will be whitelisted for both read and write operations
+		$ignore_both = array(
+			'_comment',
+			'_transient',
+			'_edit_lock',
+			'_domain_mapping_logins',
+			'indef_stats',
+			"'cron'"
+		);
 		
-		if (defined(CACHE_READ_WHITELIST) && CACHE_READ_WHITELIST) {
-			self::$CACHE_READ_WHITELIST = array_merge(self::$CACHE_READ_WHITELIST,explode('|',CACHE_READ_WHITELIST));
+		self::$CACHE_READ_WHITELIST = $ignore_both;
+		self::$CACHE_WRITE_WHITELIST = $ignore_both;
+		
+		// read-only ignore list for things like random numbers and such that have no directly related insert/update statement
+		array_push(self::$CACHE_READ_WHITELIST,
+			'FOUND_ROWS', // found rows and rand are used together
+			'RAND()',
+			'posts WHERE ID IN' // IN is used with random or search queries
+		);
+
+		// merge in any user-defined keywords
+		if (defined('CACHE_READ_WHITELIST') && CACHE_READ_WHITELIST) {
+			self::$CACHE_READ_WHITELIST = array_merge(self::$CACHE_READ_WHITELIST, explode('|',CACHE_READ_WHITELIST));
 		}
-			
-		self::$CACHE_WRITE_WHITELIST[] = '_comment ';
-		self::$CACHE_WRITE_WHITELIST[] = "next_level_cache";
-		self::$CACHE_WRITE_WHITELIST[] = "_transient";
-		self::$CACHE_WRITE_WHITELIST[] = "_edit_lock";
-		
-		if (defined(CACHE_WRITE_WHITELIST) && CACHE_WRITE_WHITELIST) {
-			self::$CACHE_WRITE_WHITELIST = array_merge(self::$CACHE_WRITE_WHITELIST,explode('|',CACHE_WRITE_WHITELIST));
+
+		// merge in any user-defined keywords
+		if (defined('CACHE_WRITE_WHITELIST') && CACHE_WRITE_WHITELIST) {
+			self::$CACHE_WRITE_WHITELIST = array_merge(self::$CACHE_WRITE_WHITELIST, explode('|',CACHE_WRITE_WHITELIST));
 		}
 	}
 	
@@ -464,6 +474,7 @@ class next_level_cache_wpdb extends wpdb
 			
 			// do not reset the cache if this query is on the whitelist
 			$invalidate_cache = true;
+			
 			foreach (self::$CACHE_WRITE_WHITELIST as $item) {
 				if (strpos($query, $item) !== false) {
 					$invalidate_cache = false;
