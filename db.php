@@ -81,14 +81,14 @@ class next_level_cache_wpdb extends wpdb
 		$ignore_both = array(
 			'_comment',
 			'_cron',
+			'_cache',
+			'_count',
 			"'cron'",
 			'_edit_lock',
 			'_nonce',
-			'_domain_mapping_logins',
-			'_transient_random_seed',
-			'indef_stats',
-			'akismet_spam_count',
-			'stats_cache'
+			'_logins',
+			'_random_seed',
+			'_stats'
 		);
 		
 		self::$CACHE_READ_WHITELIST = $ignore_both;
