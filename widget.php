@@ -52,8 +52,9 @@ class NLC_Dashboard_Widget {
 		$driver_version = ($db_driver_is_loaded)
 			? next_level_cache_wpdb::$DRIVER_VERSION
 			: '';
-		
-		echo "<div><img style='width: 100%;' alt='Next Level Cache' src='" . NEXT_LEVEL_CACHE_URL_ROOT . "images/logo.gif' /></div>";
+		if (!defined('DISABLE_NLC_LOGO') || DISABLE_NLC_LOGO !== true) {
+			echo "<div><img style='width: 100%;' alt='Next Level Cache' src='" . NEXT_LEVEL_CACHE_URL_ROOT . "images/logo.gif' /></div>";
+		}
 		
 		if ($driver_version && $driver_version == NEXT_LEVEL_CACHE_EXPECTED_DRIVER_VERSION) {
 			$count = $wpdb->get_cache_count();
