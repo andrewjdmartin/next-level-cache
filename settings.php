@@ -12,9 +12,9 @@ add_action('admin_menu', 'next_level_cache_create_menu');
  * Fired on "installed plugins" page 
  */
 function next_level_settings_link( $links ) {
-    $settings_link = '<a href="options-general.php?page=next-level-cache/settings.php">Settings</a>';
-  	array_push( $links, $settings_link );
-  	return $links;
+	$settings_link = '<a href="options-general.php?page=next-level-cache/settings.php">Settings</a>';
+	array_push( $links, $settings_link );
+	return $links;
 }
 
 /**
@@ -92,7 +92,13 @@ function next_level_cache_settings_page()
 	<div id="icon-options-general" class="icon32"></div>
 	<h2>Next Level Cache Is All Up In Your Grill</h2>
 	
-	<div class="banner-image"><img alt="Next Level Cache" src="<?php echo NEXT_LEVEL_CACHE_URL_ROOT; ?>images/logo.gif" /></div>
+	<?php 
+	if (!defined('DISABLE_NLC_LOGO') || DISABLE_NLC_LOGO !== true) {
+		?>
+		<div class="banner-image"><img alt="Next Level Cache" src="<?php echo NEXT_LEVEL_CACHE_URL_ROOT; ?>images/logo.gif" /></div>
+		<?php
+	}
+	?>
 	
 	<div id="next_level_cache_header">
 		
